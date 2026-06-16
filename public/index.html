@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FEB Chat</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <h1>MAX Chat</h1>
+      <p class="muted">Глобальный и групповой чат вместе с подполковником Зубенко и ФСБшником Дядей Толей</p>
+ 
+      <div class="auth-tabs">
+        <button id="loginTab" class="tab active" type="button">Вход</button>
+        <button id="registerTab" class="tab" type="button">Регистрация</button>
+      </div>
+ 
+      <form id="loginForm" class="auth-form">
+        <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required />
+        <input id="loginPassword" type="password" placeholder="Пароль" autocomplete="current-password" required />
+ 
+        <button type="submit">Войти</button>
+      </form>
+ 
+      <form id="registerForm" class="auth-form hidden">
+        <input id="registerUsername" type="text" placeholder="Имя" autocomplete="username" required />
+        <input id="registerEmail" type="email" placeholder="Email" autocomplete="email" required />
+        <input id="registerPassword" type="password" placeholder="Пароль минимум 6 символов" autocomplete="new-password" required />
+ 
+        <button type="submit">Создать аккаунт</button>
+      </form>
+ 
+      <p id="authError" class="error-text"></p>
+    </div>
+  </div>
+ 
+  <div id="appScreen" class="app hidden">
+    <aside class="sidebar">
+      <div class="profile-box">
+        <div id="myAvatar" class="avatar big"></div>
+ 
+        <div class="profile-info">
+          <input id="profileUsername" class="profile-input" type="text" placeholder="Имя" />
+ 
+          <textarea
+            id="profileAbout"
+            class="profile-about"
+            placeholder="Короткий рассказ о себе"
+          ></textarea>
+ 
+          <div class="profile-actions">
+            <label class="file-label">
+              Фото
+              <input id="avatarInput" type="file" accept="image/*" hidden />
+            </label>
+ 
+            <button id="saveProfileBtn" type="button">Сохранить</button>
+          </div>
+        </div>
+      </div>
+ 
+      <button id="globalChatBtn" class="global-btn active" type="button">
+        Дядя Толя chat
+        <span>Общий чат для всех пользователей</span>
+      </button>
+ 
+      <button id="createGroupBtn" class="create-group-btn" type="button">
+        ＋ Создать чат с Толей
+      </button>
+ 
+      <div class="dialogs-head">
+        <h3>Чаты</h3>
+ 
+        <input
+          id="searchUsersInput"
+          type="text"
+          placeholder="Поиск среди созданных чатов"
+        />
+      </div>
+ 
+      <div id="dialogsList" class="dialogs-list"></div>
+ 
+      <button id="logoutBtn" class="logout-btn" type="button">Выйти</button>
+    </aside>
+ 
+    <main class="chat">
+      <header class="chat-header">
+        <button id="chatHeaderInfoBtn" class="chat-header-info" type="button">
+          <div id="chatHeaderAvatar" class="avatar header-avatar hidden"></div>
+ 
+          <div class="chat-header-text">
+            <h2 id="chatTitle">Чат Дяди Толи и Зубенко</h2>
+            <p id="chatSubtitle">Общий чат для всех пользователей</p>
+          </div>
+        </button>
+ 
+        <div id="chatStatus" class="chat-status">online</div>
+      </header>
+ 
+      <section id="messagesBox" class="messages-box"></section>
+ 
+      <form id="messageForm" class="message-form">
+        <div class="message-compose">
+          <div id="messageImagePreview" class="message-image-preview hidden">
+            <img id="messageImagePreviewImg" src="" alt="Выбранное фото" />
+ 
+            <button
+              id="clearMessageImageBtn"
+              class="clear-message-image-btn"
+              type="button"
+              aria-label="Убрать фото"
+            >
+              ×
+            </button>
+          </div>
+ 
+          <div id="emojiPicker" class="emoji-picker hidden"></div>
+ 
+          <div class="message-compose-row">
+            <label class="message-photo-btn" title="Прикрепить фото">
+              📷
+              <input
+                id="messageImageInput"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                hidden
+              />
+            </label>
+ 
+            <button
+              id="emojiPickerBtn"
+              class="message-emoji-btn"
+              type="button"
+              title="Добавить эмодзи"
+            >
+              😊
+            </button>
+ 
+            <input
+              id="messageInput"
+              type="text"
+              placeholder="Напиши сообщение..."
+              maxlength="2000"
+              autocomplete="off"
+            />
+ 
+            <button class="message-submit-btn" type="submit">Отправить</button>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+ 
+  <div id="userProfileModal" class="modal hidden">
+    <div id="profileModalBackdrop" class="modal-backdrop"></div>
+ 
+    <div class="modal-card">
+      <button id="closeProfileModalBtn" class="modal-close" type="button">×</button>
+ 
+      <div class="profile-modal-top">
+        <div id="profileModalAvatar" class="avatar big"></div>
+ 
+        <div>
+          <h2 id="profileModalName">Пользователь</h2>
+          <p id="profileModalLabel">Профиль пользователя</p>
+        </div>
+      </div>
+ 
+      <div class="profile-modal-about">
+        <h3>О себе</h3>
+        <p id="profileModalAbout">Нет описания</p>
+      </div>
+ 
+      <button id="privateMessageBtn" class="private-message-btn" type="button">
+        Написать личное сообщение
+      </button>
+ 
+      <p id="ownProfileNote" class="own-profile-note hidden">
+        Это ваш профиль
+      </p>
+    </div>
+  </div>
+ 
+  <div id="groupCreateModal" class="modal hidden">
+    <div id="groupCreateBackdrop" class="modal-backdrop"></div>
+ 
+    <div class="modal-card">
+      <button id="closeGroupCreateBtn" class="modal-close" type="button">×</button>
+ 
+      <div class="modal-title-block">
+        <h2>Создать групповой чат</h2>
+        <p>Выбери название и участников группы</p>
+      </div>
+ 
+      <div class="form-block">
+        <label>Название группы</label>
+        <input id="groupTitleInput" type="text" placeholder="Например: Друзья" maxlength="80" />
+      </div>
+ 
+      <div class="form-block">
+        <label>Поиск пользователей</label>
+        <input id="groupUserSearchInput" type="text" placeholder="Имя или email" />
+      </div>
+ 
+      <div id="selectedGroupUsers" class="selected-users"></div>
+ 
+      <div id="groupUsersList" class="group-users-list"></div>
+ 
+      <p id="groupCreateError" class="error-text"></p>
+ 
+      <button id="submitCreateGroupBtn" class="private-message-btn" type="button">
+        Создать группу
+      </button>
+    </div>
+  </div>
+ 
+  <div id="groupInfoModal" class="modal hidden">
+    <div id="groupInfoBackdrop" class="modal-backdrop"></div>
+ 
+    <div class="modal-card">
+      <button id="closeGroupInfoBtn" class="modal-close" type="button">×</button>
+ 
+      <div class="profile-modal-top">
+        <div class="avatar big group-avatar">#</div>
+ 
+        <div>
+          <h2 id="groupInfoTitle">Групповой чат</h2>
+          <p id="groupInfoSubtitle">Участники группы</p>
+        </div>
+      </div>
+ 
+      <div class="profile-modal-about">
+        <h3>Участники</h3>
+        <div id="groupInfoParticipantsList" class="group-info-participants"></div>
+      </div>
+    </div>
+  </div>
+ 
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* 1. Сбрасываем отступы у самой страницы и запрещаем общий скролл экрана */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: sans-serif; /* или твой шрифт */
+}
+
+/* 2. Главный контейнер приложения, который делит экран на левую и правую часть */
+/* Если у тебя другой класс/id (например, #appScreen или .container), примени эти свойства к нему */
+.app-container, #app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* 3. Левая панель (профиль, список чатов) — чтобы она не сжималась */
+.sidebar, .left-panel {
+  width: 300px; /* или твоя фиксированная ширина */
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto; /* список чатов пусть скроллится сам, если их много */
+}
+
+/* 4. Правое окно самого чата (Главное исправление) */
+.chat-window {
+  flex: 1; /* Занимает ВСЕ оставшееся место справа */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Занимает ровно 100% от родительского контейнера */
+  overflow: hidden; /* Сама панель не скроллится */
+  position: relative;
+}
+
+/* 5. Блок с сообщениями внутри чата */
+#messagesBox {
+  flex: 1; /* Растягивается и забирает всё свободное место между шапкой и инпутом */
+  overflow-y: auto; /* Скролл появляется ТОЛЬКО здесь */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 6. Форма отправки сообщения намертво закрепляется внизу .chat-window */
+#messageForm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background: #1e1e24; /* Верни здесь свой цвет фона формы */
+  border-top: 1px solid #333;
+  flex-shrink: 0; /* Запрещаем форме сжиматься в 0 */
+}
+body {
+  background: #160808;
+  color: #f5f5f5;
+  font-family: "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.auth-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, #2d1010 0%, #160808 60%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(40, 14, 14, 0.95);
+  border: 1px solid #4a2222;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 40px rgba(0,0,0,.45),
+    0 10px 80px rgba(255,40,40,.08);
+}
+
+.auth-card h1 {
+  font-size: 34px;
+  margin-bottom: 10px;
+  letter-spacing: .5px;
+}
+
+.muted {
+  color: #b79f9f;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  cursor: pointer;
+  border-radius: 16px;
+  padding: 13px;
+  font-weight: 600;
+  color: #d7cfcf;
+  background: #241010;
+  transition: .2s;
+}
+
+.tab:hover {
+  background: #311616;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #ff3d3d, #c51f1f);
+  color: white;
+  box-shadow: 0 0 18px rgba(255,50,50,.35);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-form input {
+  border: 1px solid #492424;
+  background: #1f0d0d;
+  color: white;
+  border-radius: 16px;
+  padding: 15px;
+  outline: none;
+  transition: .2s;
+}
+
+.auth-form input:focus {
+  border-color: #ff4a4a;
+  box-shadow: 0 0 0 4px rgba(255,50,50,.12);
+}
+
+.auth-form button {
+  border: none;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 16px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #ff3434, #b91d1d);
+  transition: .2s;
+}
+
+.auth-form button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(255,40,40,.2);
+}
+
+.error-text {
+  color: #7d8cff;
+  min-height: 20px;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(to bottom, #1c0b0b, #160808);
+  border-right: 1px solid #442222;
+  overflow: hidden;
+}
+
+.profile-box {
+  display: flex;
+  gap: 14px;
+  padding: 20px;
+  border-bottom: 1px solid #442222;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ff4040, #b91d1d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.avatar.big {
+  width: 68px;
+  height: 68px;
+  min-width: 68px;
+  font-size: 24px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.group-avatar {
+  background: linear-gradient(135deg, #ff9b3d, #dd5d1e);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at top right, #1d0d0d, #0f172a 65%);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(28, 10, 10, .95);
+  border-bottom: 1px solid #442222;
+  backdrop-filter: blur(10px);
+}
+
+.chat-header h2 {
+  font-size: 22px;
+}
+
+.chat-header p {
+  color: #b8a2a2;
+  margin-top: 4px;
+}
+
+.messages-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.message {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  max-width: 82%;
+}
+
+.message.own {
+  margin-left: auto;
+  flex-direction: row-reverse;
+}
+
+.message-bubble {
+  background: rgba(48, 18, 18, .95);
+  border: 1px solid #4a2222;
+  border-radius: 20px;
+  padding: 12px 14px;
+  backdrop-filter: blur(8px);
+}
+
+.message.own .message-bubble {
+  background: linear-gradient(135deg, #8d1d1d, #b32424);
+  border-color: #ff4b4b;
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  gap: 12px;
+}
+/* Главный контейнер, где находится сам чат (справа) */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Растягиваем на всю высоту экрана */
+  overflow: hidden; /* Запрещаем скролл всему окну чата */
+}
+
+/* Блок с сообщениями (messagesBox) */
+#messagesBox {
+  flex: 1; /* Занимает все свободное пространство между шапкой и вводом */
+  overflow-y: auto; /* Скролл появляется ТОЛЬКО здесь */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Форма отправки сообщения (текстовое поле и кнопки) */
+#messageForm {
+  position: sticky; /* Либо можно использовать background и обычный flex */
+  bottom: 0;
+  background: #1e1e24; /* Поставь здесь цвет фона своего приложения */
+  padding: 15px;
+  border-top: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.message-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.message-time {
+  color: #b39c9c;
+  font-size: 12px;
+}
+
+.message-text {
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message-form {
+  padding: 18px;
+  background: rgba(25, 10, 10, .96);
+  border-top: 1px solid #442222;
+  backdrop-filter: blur(10px);
+}
+
+.message-compose-row {
+  display: flex;
+  gap: 12px;
+}
+
+.message-compose-row input {
+  flex: 1;
+  border-radius: 18px;
+  border: 1px solid #492424;
+  background: #1d0d0d;
+  color: white;
+  padding: 15px;
+}
+
+.message-submit-btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 18px;
+  padding: 0 22px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #ff3838, #b61d1d);
+}
+
+.message-submit-btn:hover {
+  box-shadow: 0 0 20px rgba(255,50,50,.25);
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,.8);
+  backdrop-filter: blur(7px);
+}
+
+.modal-card {
+  background: #241010;
+  border: 1px solid #5a3030;
+  border-radius: 30px;
+  box-shadow: 0 25px 90px rgba(0,0,0,.6);
+}
+
+.emoji-item,
+.message-emoji-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.emoji-item:hover,
+.message-emoji-btn:hover {
+  background: transparent !important;
+}
+
+.message-name,
+.dialog-name,
+.user-pick-name,
+.user-pick-about,
+.dialog-user {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.profile-open-btn,
+.chat-header-info {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 800px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    min-height: 45vh;
+  }
+  .chat {
+    height: 55vh;
+  }
+  .message {
+    max-width: 96%;
+  }
+  .chat-header {
+    padding: 16px;
+  }
+  .messages-box {
+    padding: 16px;
+  }
+  .message-form {
+    padding: 12px;
+  }
+}
